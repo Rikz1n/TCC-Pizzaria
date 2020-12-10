@@ -1,0 +1,196 @@
+﻿@model IEnumerable<Categoria>
+@{
+    ViewData["Title"] = "Cardápio";
+    Layout = "~/Views/Shared/_LayoutFront.cshtml";
+}
+
+<section class="features17 cid-s1kdqUtT8Y" id="features17-1k">
+    <div class="container-fluid">
+        <div class="media-container-row">
+            @foreach (var cat in Model)
+            {
+                @if (cat.ExibirCardapio)
+                {
+                    <div class="card p-3 col-12 col-md-6 col-lg-3">
+                        <div class="card-wrapper">
+                            <div class="card-img">
+                                <img src="@Url.Content(cat.Imagem)" alt="@cat.Nome" title="@cat.Nome">
+                            </div>
+                            <div class="card-box">
+                                <div class="mbr-section-btn align-center">
+                                    <a href="@string.Concat("#", cat.Nome.ToLower())" onclick="Exibir('@cat.Nome.ToLower()')" class="btn btn-primary display-4">
+                                        @(cat.CategoriaPai == null ? cat.Nome : string.Concat(cat.CategoriaPai.Nome, " ", cat.Nome)) &nbsp;
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            }
+        </div>
+    </div>
+</section>
+
+@foreach (var cat in Model)
+{
+    @if (cat.ExibirCardapio)
+    {
+
+        @if (cat.CategoriaPai != null)
+        {
+            <div id="@cat.Nome.ToLower()" style="display:none">
+                <section class="section-table cid-rXn7ag8qKK mbr-parallax-background" id="table1-l">
+                    <div class="mbr-overlay" style="opacity: 0.9; background-color: rgb(255, 255, 255);"></div>
+                    <div class="container container-table">
+                        <h2 class="mbr-section-title mbr-fonts-style align-center pb-3 display-2">
+                            <strong>
+                                @string.Concat(cat.CategoriaPai.Nome, " ", cat.Nome)
+                            </strong>
+                        </h2>
+                        <div class="table-wrapper">
+                            <div class="container scroll">
+                                <table class="table table-striped" cellspacing="0">
+                                    <thead>
+                                        <tr class="table-heads ">
+                                            <th class="head-item mbr-fonts-style display-7">
+                                                Sabores
+                                            </th>
+                                            <th class="head-item mbr-fonts-style display-7">
+                                                Grande
+                                            </th>
+                                            <th class="head-item mbr-fonts-style display-7">Big Pizza</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var prod in cat.Produtos)
+                                        {
+                                            <tr>
+                                                <td class="body-item mbr-fonts-style display-7">@prod.Nome<br>(@prod.Descricao)<br></td>
+                                                <td class="body-item mbr-fonts-style display-7">R$ @string.Format("{0:N2}", prod.Valor1) </td>
+                                                <td class="body-item mbr-fonts-style display-7">R$ @string.Format("{0:N2}", prod.Valor2)</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="container table-info-container"></div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        }
+        else
+        {
+            @if (cat.Produtos.Count > 0)
+            {
+                <div id="@cat.Nome.ToLower()" style="display:none">
+                    <section class="section-table cid-rXn7ag8qKK mbr-parallax-background" id="table1-l">
+                        <div class="mbr-overlay" style="opacity: 0.9; background-color: rgb(255, 255, 255);"></div>
+                        <div class="container container-table">
+                            <h2 class="mbr-section-title mbr-fonts-style align-center pb-3 display-2">
+                                <strong>
+                                    @cat.Nome
+                                </strong>
+                            </h2>
+                            <div class="table-wrapper">
+                                <div class="container scroll">
+                                    <table class="table table-striped" cellspacing="0">
+                                        <thead>
+                                            <tr class="table-heads ">
+                                                <th class="head-item mbr-fonts-style display-7">
+                                                    Descrição
+                                                </th>
+                                                <th class="head-item mbr-fonts-style display-7">
+                                                    Preço
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @foreach (var prod in cat.Produtos)
+                                            {
+                                                <tr>
+                                                    <td class="body-item mbr-fonts-style display-7">@prod.Nome<br></td>
+                                                    <td class="body-item mbr-fonts-style display-7">R$ @string.Format("{0:N2}", prod.Valor1) </td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div class="container table-info-container"></div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+
+            }
+            else
+            {
+                <div id="@cat.Nome.ToLower()" style="display:none">
+                    <section class="section-table cid-rXn7ag8qKK mbr-parallax-background" id="table1-l">
+                        <div class="mbr-overlay" style="opacity: 0.9; background-color: rgb(255, 255, 255);"></div>
+                        <div class="container container-table">
+                            <h2 class="mbr-section-title mbr-fonts-style align-center pb-3 display-2">
+                                <strong>
+                                    @cat.Nome
+                                </strong>
+                            </h2>
+                            <div class="table-wrapper">
+                                <div class="container scroll">
+                                    @foreach (var catFilho in Model.Where(c => c.CategoriaPai == cat).ToList())
+                                    {
+                                        <table class="table table-striped" cellspacing="0">
+                                            <thead>
+                                                <tr class="table-heads ">
+                                                    <th class="head-item mbr-fonts-style display-7">
+                                                        @catFilho.Nome
+                                                    </th>
+                                                    <th class="head-item mbr-fonts-style display-7" width="20%">
+                                                        Preço
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                @foreach (var prod in catFilho.Produtos)
+                                                {
+                                                    <tr>
+                                                        <td class="body-item mbr-fonts-style display-7">@prod.Nome<br></td>
+                                                        <td class="body-item mbr-fonts-style display-7">R$ @string.Format("{0:N2}", prod.Valor1) </td>
+                                                    </tr>
+                                                }
+                                            </tbody>
+                                        </table>
+                                    }
+                                </div>
+                                <div class="container table-info-container"></div>
+                            </div>
+                        </div>
+                    </section>
+                </div>
+            }
+        }
+    }
+}
+
+@section Scripts{
+    <script type="text/javascript">
+        // Pega as categorias principais do Model e transforma em vetor para o javascript
+        var model = @Html.Raw(Json.Serialize(Model.Where(c => c.ExibirCardapio).Select(c => c.Nome).ToArray()));
+
+        function Exibir(elemento) {
+            // For para esconder todos
+            for (i = 0; i < model.length; i++) {
+                if (model[i].toLowerCase() != elemento) {
+                    var x = document.getElementById(model[i].toLowerCase());
+                    x.style.display = "none";
+                }
+            }
+            // Pesquisa o clicado e mostra ou esconde
+            var x = document.getElementById(elemento);
+            if (x.style.display === "none") {
+                x.style.display = "block";
+            } else {
+                x.style.display = "none";
+            }
+        }
+    </script>
+}
